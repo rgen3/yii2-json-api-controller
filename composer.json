@@ -1,0 +1,21 @@
+{
+  "name": "rgen3/yii2-json-api-controller",
+  "description": "Yii2 simple json base controller.",
+  "keywords": ["yii2", "extension", "json", "controller"],
+  "type": "yii2-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexander Tanaev",
+      "email": "rgen3@mail.ru"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/rgen3/yii2-json-api-controller"
+  },
+  "autoload": {
+    "psr-4": {
+      "rgen3\\controller\\json\\": "src/"
+    }
+  }
+}

@@ -8,6 +8,11 @@ using native yii2 model rules
 composer require rgen3/yii2-json-api-controller
 ```
 
+# NB
+You can use this controller with simple json client
+https://github.com/rgen3/restapi-core-client
+
+
 Usage example
 ---
 

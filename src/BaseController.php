@@ -3,11 +3,13 @@
 namespace rgen3\controller\json;
 
 use yii\base\Action;
+use yii\base\InvalidRouteException;
 use yii\base\Model;
 use yii\helpers\Json;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class BaseController extends Controller
@@ -67,14 +69,29 @@ class BaseController extends Controller
     public function runAction($id, $params = [])
     {
         try {
-            return parent::runAction($id, $params);
+            return $this->prepareAction($id, $params);
         } catch (HttpException $e) {
             \Yii::$app->response->setStatusCode($e->statusCode);
-            return $this->error($this->errorContext);
+            $this->errorJson($this->errorContext);
         } catch (\Throwable $e) {
             \Yii::$app->response->setStatusCode(500);
             $this->errorContext[] = $e->getMessage();
-            return $this->error($this->errorContext);
+            $this->errorJson($this->errorContext);
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $params
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    private function prepareAction($id, $params)
+    {
+        try {
+            return parent::runAction($id, $params);
+        } catch (InvalidRouteException $e) {
+            throw new NotFoundHttpException($e->getMessage());
         }
     }
 
@@ -94,6 +111,19 @@ class BaseController extends Controller
     protected function error(array $data)
     {
         return $this->pack($data, 'error');
+    }
+
+    /**
+     * @param array $data
+     * @throws \yii\base\ExitException
+     */
+    protected function errorJson(array $data)
+    {
+        echo json_encode(
+            $this->error($data),
+            JSON_UNESCAPED_UNICODE
+        );
+        \Yii::$app->end();
     }
 
     /**

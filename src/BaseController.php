@@ -7,6 +7,7 @@ use yii\base\InvalidRouteException;
 use yii\base\Model;
 use yii\helpers\Json;
 use yii\rest\Controller;
+use yii\web\Application;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -72,6 +73,7 @@ class BaseController extends Controller
             return $this->prepareAction($id, $params);
         } catch (HttpException $e) {
             \Yii::$app->response->setStatusCode($e->statusCode);
+            \Yii::$app->response->statusText = $e->getMessage();
             $this->errorJson($this->errorContext);
         } catch (\Throwable $e) {
             \Yii::$app->response->setStatusCode(500);
@@ -123,6 +125,7 @@ class BaseController extends Controller
             $this->error($data),
             JSON_UNESCAPED_UNICODE
         );
+        \Yii::$app->state = Application::STATE_END;
         \Yii::$app->end();
     }
 
